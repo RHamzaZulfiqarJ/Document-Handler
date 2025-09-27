@@ -96,7 +96,7 @@ const Create = ({ open, setOpen }) => {
         formData.append("documents", data.documents[i]);
       }
 
-      await axios.post("http://localhost:3000/api/v1/documents/", formData, {
+      await axios.post(`${baseURL}documents/`, formData, {
         headers: {
           authtoken: token,
           "Content-Type": "multipart/form-data",

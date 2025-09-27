@@ -19,7 +19,7 @@ const Page = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/api/v1/documents", {
+        const { data } = await axios.get(`${baseURL}documents`, {
           headers: { authtoken: localStorage.getItem("token") },
         });
 

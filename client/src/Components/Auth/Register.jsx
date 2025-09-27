@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { baseURL } from "../../constant";
 
 const Register = () => {
   /////////////////////////////////////// Constants //////////////////////////////////////////
@@ -36,7 +37,7 @@ const Register = () => {
     if (!validate()) return;
 
     try {
-      await axios.post("http://localhost:3000/api/v1/auth/register", data);
+      await axios.post(`${baseURL}auth/register`, data);
       navigate("/");
     } catch (err) {
       console.error("Register failed:", err.response?.data || err.message);

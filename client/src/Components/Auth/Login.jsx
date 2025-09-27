@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { baseURL } from "../../constant";
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/login", data);
+      const res = await axios.post(`${baseURL}auth/login`, data);
       const token = res.data.result.token;
       localStorage.setItem("token", token);
       Cookies.set('profile', JSON.stringify(res.data.result))
