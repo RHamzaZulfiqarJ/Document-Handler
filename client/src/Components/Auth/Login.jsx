@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { baseURL } from "../../constant";
-
+import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,20 +21,39 @@ const Login = () => {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post(`${baseURL}auth/login`, data);
       const token = res.data.result.token;
       localStorage.setItem("token", token);
-      Cookies.set('profile', JSON.stringify(res.data.result))
+      Cookies.set("profile", JSON.stringify(res.data.result));
       navigate("/dashboard");
     } catch (err) {
-      console.error("Login failed:", err.response?.data || err.message);
+      let message = "Something went wrong";
+
+      if (err.response?.data) {
+        const data = err.response.data;
+
+        if (typeof data === "string") {
+          const match = data.match(/Error:\s*(.*?)<br>/i);
+          if (match) message = match[1].trim();
+        } else if (data.message) {
+          message = data.message;
+        }
+      }
+
+      toast.error(message);
+    } finally {
+      setLoading(false);
+      toast.success("Logged in successfully");
     }
   };
 
@@ -53,6 +72,7 @@ const Login = () => {
                     type="text"
                     value={data.email}
                     onChange={handleChange}
+                    disabled={loading}
                     required
                     className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
                     placeholder="Enter your email"
@@ -67,6 +87,7 @@ const Login = () => {
                     type="password"
                     value={data.password}
                     onChange={handleChange}
+                    disabled={loading}
                     required
                     className="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600"
                     placeholder="Enter password"
@@ -77,8 +98,9 @@ const Login = () => {
               <div className="!mt-12">
                 <button
                   type="submit"
-                  className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
-                  Sign in
+                  className="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer"
+                  disabled={loading}>
+                  {loading ? "Logging in..." : "Log In"}
                 </button>
               </div>
               <p className="text-slate-900 text-sm !mt-6 text-center">

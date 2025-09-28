@@ -3,8 +3,9 @@ import React from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { baseURL } from "../../constant";
+import { toast } from "sonner";
 
-const Create = ({ open, setOpen }) => {
+const Create = ({ open, setOpen, fetchDocuments }) => {
   /////////////////////////////////////// States ////////////////////////////////////////
   const [data, setData] = React.useState({
     title: "",
@@ -18,6 +19,8 @@ const Create = ({ open, setOpen }) => {
     tags: "",
     documents: "",
   });
+
+  const [loading, setLoading] = React.useState(false);
 
   ///////////////////////////////// Handlers & Functions /////////////////////////////////
   const handleClose = () => {
@@ -79,6 +82,7 @@ const Create = ({ open, setOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     validateTitle(data.title);
     validateTags(data.tags);
@@ -103,11 +107,13 @@ const Create = ({ open, setOpen }) => {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      setOpen(false);
-      window.location.reload();
     } catch (err) {
-      console.error(err.response?.data || err.message);
+      toast.error(err.response?.data || err.message);
+    } finally {
+      fetchDocuments();
+      setLoading(false);
+      setOpen(false);
+      toast.success("Document created successfully");
     }
   };
 

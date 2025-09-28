@@ -15,7 +15,7 @@ const Header = () => {
   return (
     <div className="sticky top-0 shadow-black/10 shadow-sm bg-gray-100 z-10 flex items-center justify-between px-4">
       {role === "admin" && <div className="text-xl py-5">Admin Dashboard</div>}
-      <div className="text-xl py-5">Document Storing App</div>
+      <div className="md:visible invisible text-xl py-5">Document Storing App</div>
       <button
         onClick={handleLogout}
         className="bg-blue-600 hover:bg-blue-700 rounded-2xl px-4 py-2 text-white cursor-pointer">

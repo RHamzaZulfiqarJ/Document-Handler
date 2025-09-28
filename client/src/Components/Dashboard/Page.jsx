@@ -16,29 +16,29 @@ const Page = () => {
   //////////////////////////////////////////// Variables ///////////////////////////////////////////
   const role = JSON.parse(Cookies.get("profile"))?.role;
 
+  const fetchDocuments = async () => {
+    try {
+      const { data } = await axios.get(`${baseURL}documents`, {
+        headers: { authtoken: localStorage.getItem("token") },
+      });
+
+      const mappedDocs = data.documents.map((doc) => ({
+        id: doc._id,
+        title: doc.title,
+        tags: doc.tags,
+        url: doc.url,
+        uploadedBy: doc.uploadedBy.name,
+        createdAt: new Date(doc.createdAt).toLocaleString(),
+      }));
+
+      setRows(mappedDocs);
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+    }
+  };
+
   ////////////////////////////////////////// useEffect /////////////////////////////////////////////
   useEffect(() => {
-    const fetchDocuments = async () => {
-      try {
-        const { data } = await axios.get(`${baseURL}documents`, {
-          headers: { authtoken: localStorage.getItem("token") },
-        });
-
-        const mappedDocs = data.documents.map((doc) => ({
-          id: doc._id,
-          title: doc.title,
-          tags: doc.tags,
-          url: doc.url,
-          uploadedBy: doc.uploadedBy.name,
-          createdAt: new Date(doc.createdAt).toLocaleString(),
-        }));
-
-        setRows(mappedDocs);
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-      }
-    };
-
     fetchDocuments();
   }, []);
 
@@ -54,7 +54,7 @@ const Page = () => {
         </button>
       </div>
 
-      <div className="pb-[8%] pt-10 px-[4%] flex gap-8 flex-wrap justify-start">
+      <div className="pb-[8%] pt-10 px-[1%] flex gap-8 flex-wrap justify-center">
         {rows.length > 0 ? (
           rows?.map((doc) => (
             <Card sx={{ maxWidth: 345 }}>
@@ -83,7 +83,7 @@ const Page = () => {
         )}
       </div>
 
-      <Create open={open} setOpen={setOpen} />
+      <Create open={open} setOpen={setOpen} fetchDocuments={fetchDocuments} />
     </div>
   );
 };
