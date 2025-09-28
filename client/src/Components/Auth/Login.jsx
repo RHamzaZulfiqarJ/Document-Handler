@@ -35,6 +35,7 @@ const Login = () => {
       const token = res.data.result.token;
       localStorage.setItem("token", token);
       Cookies.set("profile", JSON.stringify(res.data.result));
+      toast.success("Logged in successfully");
       navigate("/dashboard");
     } catch (err) {
       let message = "Something went wrong";
@@ -53,7 +54,6 @@ const Login = () => {
       toast.error(message);
     } finally {
       setLoading(false);
-      toast.success("Logged in successfully");
     }
   };
 
